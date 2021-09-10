@@ -1,5 +1,8 @@
 <main>
 	<h1>How to deploy <a href="https://svelte.dev/">Svelte</a> apps to <a href="https://pages.github.com/">GitHub Pages</a> using <a href="https://docs.github.com/en/actions">GitHub Actions</a></h1>
+	
+	GitHub repo for this post: <a href="https://github.com/josecelano/svelte-deploy-with-github-actions">https://github.com/josecelano/svelte-deploy-with-github-actions</a>
+	
 	<h2>1. Install NPM package to create gh-pages branch</h2>
 	<pre>
 		<code>
@@ -7,9 +10,9 @@
 		</code>
 	</pre>
 
-	<h2>2. Create personall GitHub token</h2>
+	<h2>2. Create a personal GitHub token</h2>
 
-	You are going to need a [GitHub personal token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) with access to your publis repos. After creating the token you can export it in your environment:
+	You are going to need a <a href="https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token">GitHub personal token</a> with access to your public repos. After creating the token you can export it in your environment:
 
 	<pre>
 		<code>
@@ -17,15 +20,30 @@
 		</code>
 	</pre>
 
-	<h2>3. Build the app and push it on the gh-pages branch</h2>	
+	<h2>3. Build the app and push it on the gh-pages branch</h2>
 
-	Then you can run this command:
+	I'm using a <a href="https://www.npmjs.com/package/gh-pages">NPM package</a> to create the initial version of the gh-pages branch. This package only creates a temporary folder with a new git repo in order to push to gh-pages branch.
+
+	The <a href="https://github.com/josecelano/svelte-deploy-with-github-actions/blob/master/scripts/gh-pages.js">script</a> to do it it's very simple. You can see it <a href="https://github.com/josecelano/svelte-deploy-with-github-actions/blob/master/scripts/gh-pages.js">here</a>.<br>
+
+	<br>
+	Some people is using Git subtree: 
+	
+	<ul>
+		<li><a href="https://www.fahdmurtaza.com/github-pages-deploying-a-subfolder-to-github-pages/">Github Pages: Deploying a subfolder to GitHub Pages (by Fahad Murtaza)</a></li>
+		<li><a href="https://davidhallin.com/blog/deploying-a-static-site-to-github-pages/">Deploying a static site to a repo subtree and hosting it for free on github pages (by David Hallin)</a></li>
+	</ul>
+
+	but I do not want to add the build artifact to the master branch of the repo.<br>
+	<br>
+	
+	And finally this is the command you can run to build and push the app:
 	<pre>
 		<code>
 			npm run build && ./scripts/gh-pages.js
 		</code>
 	</pre>	
-	to build the app and create the gh-pages branch on the GitHub repo. You should see something like:
+	You should see something like:
 
 	<pre>
 		<code>
@@ -45,15 +63,15 @@ Deploy Complete!
 		</code>
 	</pre>	
 
-	And you should have a new [gh-pages branch](https://github.com/josecelano/svelte-deploy-with-github-actions/tree/gh-pages) on you GitHub repo with the production app.
+	And you should have a new <a href="https://github.com/josecelano/svelte-deploy-with-github-actions/tree/gh-pages">gh-pages branch</a> on you GitHub repo with the production app.
 
-	<h2>3. Application already publish</h2>		
+	<h2>4. Application already published</h2>		
 
-	At this point you should have the applciation already publish on GitHub pages on a URL like this:
-
-	[https://josecelano.github.io/svelte-deploy-with-github-actions/](https://josecelano.github.io/svelte-deploy-with-github-actions/)
-
-	I had to make some changes in the Svelte app index file, using a relative path in the href attribute of the resouces:
+	At this point you should have the application already published on GitHub Pages on a URL like this:<br>
+	<br>
+	<a href="https://josecelano.github.io/svelte-deploy-with-github-actions/">https://josecelano.github.io/svelte-deploy-with-github-actions/</a><br>
+	<br>
+	I had to make some changes in the Svelte app index file in order to make it work. You have to use relative paths in the href attribute of the resouces:
 
 	<pre>
 		<code>
@@ -77,13 +95,49 @@ Deploy Complete!
 		</code>
 	</pre>
 
-	<h2>3. Adding the GitHib workflow</h2>
+	<h2>5. Adding the GitHub Workflow</h2>
 
-	At this point we can publish the app but only manually and we want to do it automatically using GitHub Actions. 
-	We have two options the create the GitHub workflow. The first one is trying to replicate the same thing we do manually on the workflow. 
-	And the second option is using an action from the GitHub marketplace.
+	At this point we can publish the app but only manually and we want to do it automatically using GitHub Actions.<br> 
+	<br>
+	We have two options to create the GitHub workflow.<br>
+	<br>
+	The first one is trying to replicate the same thing we do manually on the workflow.<br>
+	<br>
+	And the second option is to use an action from the <a href="https://github.com/marketplace/actions/deploy-to-github-pages">GitHub marketplace</a>. I'm going to do the second one.
 
-	I'm going to do the second one.
+	<pre>
+		<code>	
+# This is a basic workflow to automatically build a Svelte app and deploy it to GitHub Pages
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+  branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v2
+
+    - name: Install and Build
+      run: |
+        npm install
+        npm run build
+			
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        branch: gh-pages
+        folder: public
+			</code>
+		</pre>
+
+
+	You can find the final workflow file here: <a href="https://github.com/josecelano/svelte-deploy-with-github-actions/blob/master/.github/workflows/deploy.yml">https://github.com/josecelano/svelte-deploy-with-github-actions/blob/master/.github/workflows/deploy.yml</a>
+
 
 </main>
 
@@ -97,7 +151,6 @@ Deploy Complete!
 
 	h1 {
 		color: #ff3e00;
-		text-transform: uppercase;
 		font-size: 4em;
 		font-weight: 100;
 	}
