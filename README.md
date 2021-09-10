@@ -1,3 +1,5 @@
+[![Deploy to GitHub Pages](https://github.com/josecelano/svelte-deploy-with-github-actions/actions/workflows/deploy.yml/badge.svg)](https://github.com/josecelano/svelte-deploy-with-github-actions/actions/workflows/deploy.yml)
+
 This is a sample project to learn how to deploy [Svelte](https://svelte.dev) applications to [GitHub Pages](https://pages.github.com/) using [GitHub Actions](https://docs.github.com/en/actions).
 
 You can see this live page here: https://josecelano.github.io/svelte-deploy-with-github-actions/
