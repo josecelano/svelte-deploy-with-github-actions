@@ -79,7 +79,11 @@ Deploy Complete!
 
 	<h2>3. Adding the GitHib workflow</h2>
 
-	At this point we can publish the app but only manually and we want to do it automatically using GitHub Actions.
+	At this point we can publish the app but only manually and we want to do it automatically using GitHub Actions. 
+	We have two options the create the GitHub workflow. The first one is trying to replicate the same thing we do manually on the workflow. 
+	And the second option is using an action from the GitHub marketplace.
+
+	I'm going to do the second one.
 
 </main>
 
